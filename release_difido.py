@@ -129,7 +129,6 @@ if __name__ == "__main__":
 	tag(new_release_version)
 	push()
 	deploy()
-	os.chdir(PROJECT)
 	set_version(new_release_version,new_snapshot_version)
 	commit("Upgrading to version " + new_snapshot_version)	
 	push()
