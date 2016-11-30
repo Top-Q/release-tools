@@ -5,6 +5,8 @@ from common import *
 ################# Config ##################
 
 DEBUG = False
+PROJECT = "difido-reports"
+REPOSITORY = "git@github.com:Top-Q/difido-reports.git"
 
 ################# Infra ###################
 
@@ -26,14 +28,13 @@ def getParameters(sys):
 ################ GIT ####################
 
 def clone():
-	step("Clonning JSystem from the repository")
-	if os.path.isdir("jsystem"):
-		report("Found old JSystem repository folder. deleting")
-		execute_command("rm -rf jsystem")
-	os.mkdir("jsystem")
-	os.chdir("jsystem")	
-	log("Clonning JSystem repository")
-	execute_command("git clone git@github.com:Top-Q/jsystem.git")
+	step("Clonning Difido from the repository")
+	if os.path.isdir(PROJECT):
+		report("Found old " + PROJECT + " repository folder. deleting")
+		execute_command("rm -rf " + PROJECT)
+	log("Clonning " + PROJECT + " repository")
+	execute_command("git clone " + REPOSITORY)
+	os.chdir(PROJECT)	
 
 def push():
 	would_you_like_to_continue("About to push version to remote repository")
@@ -58,12 +59,12 @@ def deploy():
 	step("Deploying artifacts")		
 	if DEBUG:
 		return
-	execute_command("mvn clean deploy -f jsystem-parent/pom.xml -DskipTests=true -P dist")
+	execute_command("mvn clean deploy -f difido-parent/pom.xml -DskipTests=true")
 	
 
 def build():
-	step("Building JSystem version")
-	execute_command("mvn clean install -f jsystem-parent/pom.xml -DskipTests=true -P dist")
+	step("Building "+ PROJECT +" version")
+	execute_command("mvn clean install -f difido-parent/pom.xml")
 
 def set_version(old_version,new_version):
 	replace_versions_in_poms(old_version,new_version)
@@ -85,9 +86,8 @@ def assert_no_snapshots():
 
 
 def find_version():
-	step("Finding the current JSystem version")
-	os.chdir("jsystem")	
-	fname = "jsystem-parent/pom.xml"
+	step("Finding the current "+PROJECT+" version")
+	fname = "difido-parent/pom.xml"
 	with open(fname) as f:
 		s = f.read()
 	m = re.search("<version>([\w|\.-]+)</version>",s)
@@ -108,10 +108,6 @@ def replace_versions_in_poms(old_version,new_version):
 	        if replaceStr in s:
 	        	report(fpath)
 	        	s = s.replace(replaceStr, "<version>" + new_version + "</version>")
-	        replaceStr = "<jsystem.version>" + old_version + "</jsystem.version>"
-	        if replaceStr in s:
-	        	report(fpath)
-	        	s = s.replace(replaceStr, "<jsystem.version>" + new_version + "</jsystem.version>")
 	        with open(fpath, "w") as f:
 	            f.write(s)
 
@@ -124,16 +120,16 @@ if __name__ == "__main__":
 		print_usage()
 		sys.exit(0)
 	new_release_version, new_snapshot_version = getParameters(sys)
-	clone()
-	current_version = find_version()	
-	set_version(current_version,new_release_version)	
-	assert_no_snapshots()
-	build()
-	commit("Upgrading to version " + new_release_version)
-	tag(new_release_version)
-	push()
-	deploy()
-	
+	# clone()
+	# current_version = find_version()	
+	# set_version(current_version,new_release_version)	
+	# assert_no_snapshots()
+	# build()
+	# commit("Upgrading to version " + new_release_version)
+	# tag(new_release_version)
+	# push()
+	# deploy()
+	os.chdir(PROJECT)
 	set_version(new_release_version,new_snapshot_version)
 	commit("Upgrading to version " + new_snapshot_version)	
 	push()
