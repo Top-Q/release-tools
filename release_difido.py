@@ -64,10 +64,11 @@ def deploy():
 
 def build():
 	step("Building "+ PROJECT +" version")
-	execute_command("mvn clean install -f difido-parent/pom.xml")
+	execute_command("mvn clean install -f difido-parent/pom.xml -DskipTests=true")
 
 def set_version(old_version,new_version):
 	replace_versions_in_poms(old_version,new_version)
+	set_version_in_application_prop(old_version,new_version)
 
 def assert_no_snapshots():
 	""" We can not relase a version if it is dependent on SNAPSHOT versions """
@@ -110,6 +111,19 @@ def replace_versions_in_poms(old_version,new_version):
 	        	s = s.replace(replaceStr, "<version>" + new_version + "</version>")
 	        with open(fpath, "w") as f:
 	            f.write(s)
+
+def set_version_in_application_prop(old_version,new_version):
+	step("Changing version " + old_version + " to " + new_version +" in application.properties file ")
+	fpath = "server/difido-server/src/main/resources/config/application.properties"
+	if not os.path.isfile(fpath):
+		error("application.properties file was not found in '" + fpath + "'")
+	with open(fpath) as f:
+	    s = f.read()
+	replaceStr = "info.app.version=" + old_version
+	if replaceStr in s:
+	   	s = s.replace(replaceStr, "info.app.version=" + new_version)
+	with open(fpath, "w") as f:
+	    f.write(s)
 
 #####################################
 
