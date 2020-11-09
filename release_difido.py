@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import os,sys,re,shutil
 from common import *
 
@@ -99,18 +99,18 @@ def find_version():
 def replace_versions_in_poms(old_version,new_version):
 	step("Changing version " + old_version + " to " + new_version +" in: ")
 	for dname, dirs, files in os.walk("."):
-	    for fname in files:
-	    	if fname != "pom.xml":
-	    		continue
-	        fpath = os.path.join(dname, fname)
-	        with open(fpath) as f:
-	            s = f.read()
-	        replaceStr = "<version>" + old_version + "</version>"
-	        if replaceStr in s:
-	        	report(fpath)
-	        	s = s.replace(replaceStr, "<version>" + new_version + "</version>")
-	        with open(fpath, "w") as f:
-	            f.write(s)
+		for fname in files:
+			if fname != "pom.xml":
+				continue
+			fpath = os.path.join(dname, fname)
+			with open(fpath) as f:
+				s = f.read()
+			replaceStr = "<version>" + old_version + "</version>"
+			if replaceStr in s:
+				report(fpath)
+				s = s.replace(replaceStr, "<version>" + new_version + "</version>")
+			with open(fpath, "w") as f:
+				f.write(s)
 
 def set_version_in_application_prop(old_version,new_version):
 	step("Changing version " + old_version + " to " + new_version +" in application.properties file ")

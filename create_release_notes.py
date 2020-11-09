@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import sys
 import json
-import urllib2
+import urllib.request
 from common import *
 
 class Issue(object):
@@ -30,7 +30,7 @@ def get_parameters(sys):
 def get_milestone_number(owner,repository,milestone_title):
 	step(sys._getframe().f_code.co_name)
 	url = "https://api.github.com/repos/"+owner+"/"+repository+"/milestones?state=all"
-	result = json.load(urllib2.urlopen(url))
+	result = json.load(urllib.request.urlopen(url))
 	for milestone in result:
 		if milestone["title"] == milestone_title:
 			log("Milestone number: "+ str(milestone["number"]))
@@ -45,7 +45,7 @@ def get_issues_per_milestone(owner,repository,milestone_number):
 	step(sys._getframe().f_code.co_name)
 	url = "https://api.github.com/repos/"+owner+"/"+repository+"/issues?milestone="+str(milestone_number)+"&state=closed"
 	log(url)
-	result = json.load(urllib2.urlopen(url))
+	result = json.load(urllib.request.urlopen(url))
 	issues = []
 	for json_issue in result:
 		issues.append(Issue(json_issue))
