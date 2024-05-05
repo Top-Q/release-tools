@@ -18,7 +18,7 @@ def log(message):
     sys.stdout.flush()
 
 def step(description):
-    log(bcolors.OKBLUE + "=========" +description +"==========" + bcolors.ENDC)
+    log(bcolors.OKBLUE + f"========={description}==========" + bcolors.ENDC)
 
 def report(message):
     log(bcolors.BOLD + message + bcolors.ENDC)    
@@ -32,11 +32,11 @@ def would_you_like_to_continue(message):
         return
     report(message + ". Would you like to continue (y/n):")    
     result = sys.stdin.readline()     
-    if result.strip() is not "y":
+    if result.strip() != "y":
         sys.exit(0)
 
 def execute_command(command):
     log(command)    
     result = os.system(command)
     if (result != 0):
-        error("Failed while trying to execute: '" + command +"'")
+        error(f"Failed while trying to execute: '{command}'")

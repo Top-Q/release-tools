@@ -32,7 +32,7 @@ def clone():
 	if os.path.isdir(PROJECT):
 		report("Found old " + PROJECT + " repository folder. deleting")
 		execute_command("rm -rf " + PROJECT)
-	log("Clonning " + PROJECT + " repository")
+	log(f"Clonning {PROJECT} repository")
 	execute_command("git clone " + REPOSITORY)
 	os.chdir(PROJECT)	
 
@@ -49,8 +49,8 @@ def tag(new_version):
 	execute_command("git tag -a "+new_version+" -m \"Releasing version "+new_version+"\"")
 
 def commit(message):
-	step("Commiting with message '" + message + "'")
-	execute_command("git commit -am \""+message+"\"")
+	step(f"Commiting with message '{message}'")
+	execute_command(f"git commit -am \"{message}\"")
 
 ################ Maven ####################
 
@@ -59,11 +59,11 @@ def deploy():
 	step("Deploying artifacts")		
 	if DEBUG:
 		return
-	execute_command("mvn clean deploy -f difido-parent/pom.xml -DskipTests=true")
+	execute_command("mvn clean deploy -f difido-parent/pom.xml -P release -DskipTests=true")
 	
 
 def build():
-	step("Building "+ PROJECT +" version")
+	step(f"Building {PROJECT} version")
 	execute_command("mvn clean install -f difido-parent/pom.xml -DskipTests=true")
 
 def set_version(old_version,new_version):
@@ -118,10 +118,10 @@ def set_version_in_application_prop(old_version,new_version):
 	if not os.path.isfile(fpath):
 		error("application.properties file was not found in '" + fpath + "'")
 	with open(fpath) as f:
-	    s = f.read()
+		s = f.read()
 	replaceStr = "info.app.version=" + old_version
 	if replaceStr in s:
-	   	s = s.replace(replaceStr, "info.app.version=" + new_version)
+		s = s.replace(replaceStr, "info.app.version=" + new_version)
 	with open(fpath, "w") as f:
 	    f.write(s)
 
