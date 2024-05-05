@@ -98,22 +98,22 @@ def find_version():
 def replace_versions_in_poms(old_version,new_version):
 	step("Changing version " + old_version + " to " + new_version +" in: ")
 	for dname, dirs, files in os.walk("."):
-	    for fname in files:
-	    	if fname != "pom.xml":
-	    		continue
-	        fpath = os.path.join(dname, fname)
-	        with open(fpath) as f:
-	            s = f.read()
-	        replaceStr = "<version>" + old_version + "</version>"
-	        if replaceStr in s:
-	        	report(fpath)
-	        	s = s.replace(replaceStr, "<version>" + new_version + "</version>")
-	        replaceStr = "<jsystem.version>" + old_version + "</jsystem.version>"
-	        if replaceStr in s:
-	        	report(fpath)
-	        	s = s.replace(replaceStr, "<jsystem.version>" + new_version + "</jsystem.version>")
-	        with open(fpath, "w") as f:
-	            f.write(s)
+		for fname in files:
+			if fname != "pom.xml":
+				continue
+			fpath = os.path.join(dname, fname)
+			with open(fpath) as f:
+				s = f.read()
+			replaceStr = "<version>" + old_version + "</version>"
+			if replaceStr in s:
+				report(fpath)
+				s = s.replace(replaceStr, "<version>" + new_version + "</version>")
+			replaceStr = "<jsystem.version>" + old_version + "</jsystem.version>"
+			if replaceStr in s:
+				report(fpath)
+				s = s.replace(replaceStr, "<jsystem.version>" + new_version + "</jsystem.version>")
+			with open(fpath, "w") as f:
+				f.write(s)
 
 #####################################
 
